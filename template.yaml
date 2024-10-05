@@ -1,11 +1,11 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: >
   S3ImageResizer
 Parameters:
   AppBucketName:
     Type: String
-    Description: 'REQUIRED: Unique S3 bucket name to use for the app.'
+    Description: "REQUIRED: Unique S3 bucket name to use for the app."
 
 Resources:
   S3JsonLoggerFunction:
@@ -14,30 +14,30 @@ Resources:
       Handler: src/handlers/s3-json-logger.s3JsonLoggerHandler
       Runtime: nodejs20.x
       Architectures:
-      - x86_64
+        - x86_64
       MemorySize: 128
       Timeout: 60
       Policies:
         S3ReadPolicy:
-          BucketName: !Ref AppBucketName
+          BucketName: local-travel-s3
       Events:
         S3NewObjectEvent:
           Type: S3
           Properties:
-            Bucket: !Ref AppBucket
+            Bucket: local-travel-s3
             Events: s3:ObjectCreated:*
             Filter:
               S3Key:
                 Rules:
-                - Name: suffix
-                  Value: .json
+                  - Name: suffix
+                    Value: .json
   AppBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref AppBucketName
+      BucketName: local-travel-s3
       BucketEncryption:
         ServerSideEncryptionConfiguration:
-        - BucketKeyEnabled: true
+          - BucketKeyEnabled: true
       VersioningConfiguration:
         Status: Enabled
 # # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
